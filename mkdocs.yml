@@ -7,11 +7,13 @@ theme:
     - yaml
     - rust
     - python
+
 markdown_extensions:
   - toc
   - tables
   - pymdownx.arithmatex:
       generic: true
+
 plugins:
   - search
   - mermaid2
@@ -21,6 +23,7 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
 
 nav:
+  - Home: index.md
   - Physics:
       - Mechanics:
           - Problem 1: "1 Physics/1 Mechanics/Problem_1.md"
