@@ -120,6 +120,356 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="problem-2">Problem 2</h1>
+<h1 id="1-circle-based-monte-carlo-method">1. Circle-Based Monte Carlo Method</h1>
+<h1 id="11-theoretical-part">1.1 Theoretical Part</h1>
+<p>The Monte Carlo approach for approximating π through a circular model hinges on comparing the area of a circle to the square it fits within. For a unit circle (radius = 1) centered at the origin:</p>
+<ul>
+<li>Circle area: <span class="arithmatex">\(A_c = \pi r^2 = \pi\)</span></li>
+<li>Square area: <span class="arithmatex">\(A_s = (2r)^2 = 4\)</span></li>
+</ul>
+<p>The ratio of these areas is:</p>
+<div class="arithmatex">\[ \frac{A_c}{A_s} = \frac{\pi}{4} \]</div>
+<p>Therefore:</p>
+<div class="arithmatex">\[ \pi = 4 \cdot \frac{A_c}{A_s} \approx 4 \cdot \frac{\text{points inside circle}}{\text{total points}} \]</div>
+<p>Let's implement this in Python:</p>
+<pre><code class="language-python"># Basic imports - no external dependencies
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+def estimate_pi_circle(n_points):
+    """
+    Estimate π using the circle method.
+    """
+    # Generate random points
+    x = np.random.uniform(-1, 1, n_points)
+    y = np.random.uniform(-1, 1, n_points)
+
+    # Calculate distances from origin
+    distances = np.sqrt(x**2 + y**2)
+
+    # Count points inside circle
+    inside_circle = np.sum(distances &lt;= 1)
+
+    # Estimate pi
+    pi_estimate = 4 * inside_circle / n_points
+
+    return pi_estimate, x, y, distances
+
+def plot_circle_method():
+    """
+    Create visualization for the circle method with different sample sizes.
+    """
+    sample_sizes = [100, 1000, 10000]
+    fig, axes = plt.subplots(1, 3, figsize=(20, 6))
+
+    for i, n in enumerate(sample_sizes):
+        pi_est, x, y, distances = estimate_pi_circle(n)
+
+        # Plot points
+        inside = distances &lt;= 1
+        axes[i].scatter(x[inside], y[inside], c='blue', alpha=0.6, label='Inside')
+        axes[i].scatter(x[~inside], y[~inside], c='red', alpha=0.6, label='Outside')
+
+        # Draw circle
+        theta = np.linspace(0, 2*np.pi, 100)
+        axes[i].plot(np.cos(theta), np.sin(theta), 'k-')
+
+        axes[i].set_aspect('equal')
+        axes[i].grid(True)
+        axes[i].set_title(f'n = {n}\nπ ≈ {pi_est:.6f}')
+        axes[i].legend()
+        axes[i].set_xlabel('x')
+        axes[i].set_ylabel('y')
+
+    plt.tight_layout()
+    plt.show()
+
+def simulate_buffon_needle(n_needles, L=1, D=2):
+    """
+    Simulate Buffon's needle experiment.
+    """
+    # Random positions and angles
+    y = np.random.uniform(0, D, n_needles)
+    theta = np.random.uniform(0, np.pi, n_needles)
+
+    # Calculate needle endpoints
+    y2 = y + L * np.sin(theta)
+
+    # Count crossings
+    crossings = np.sum(np.floor(y/D) != np.floor(y2/D))
+
+    # Estimate pi
+    pi_estimate = (2 * L * n_needles) / (D * crossings) if crossings &gt; 0 else np.inf
+
+    return pi_estimate, y, theta
+
+def plot_buffon_needles(n_needles=50):
+    """
+    Visualize Buffon's needle experiment.
+    """
+    L, D = 1, 2
+    pi_est, y, theta = simulate_buffon_needle(n_needles, L, D)
+
+    # Calculate needle endpoints
+    x = np.zeros(n_needles)
+    y1 = y
+    x2 = L * np.cos(theta)
+    y2 = y + L * np.sin(theta)
+
+    plt.figure(figsize=(15, 8))
+
+    # Draw parallel lines
+    for i in range(-1, 4):
+        plt.axhline(y=i*D, color='k', linestyle='--', alpha=0.3)
+
+    # Draw needles
+    for i in range(n_needles):
+        crosses = np.floor(y1[i]/D) != np.floor(y2[i]/D)
+        color = 'red' if crosses else 'blue'
+        plt.plot([x[i], x2[i]], [y1[i], y2[i]], color=color, alpha=0.6,
+                 label='Crossing' if crosses and i == 0 else 'Not crossing' if not crosses and i == 0 else "")
+
+    plt.title(f'Buffon\'s Needle Simulation (n={n_needles}, π ≈ {pi_est:.6f})')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('equal')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+def compare_methods(max_points=5, steps=50):
+    """
+    Compare convergence of both methods.
+    """
+    points = np.logspace(2, max_points, steps, dtype=int)
+    circle_errors = []
+    buffon_errors = []
+
+    for n in points:
+        # Circle method
+        pi_est_circle, _, _, _ = estimate_pi_circle(n)
+        circle_errors.append(abs(pi_est_circle - np.pi))
+
+        # Buffon's needle method
+        pi_est_buffon, _, _ = simulate_buffon_needle(n)
+        if pi_est_buffon != np.inf:
+            buffon_errors.append(abs(pi_est_buffon - np.pi))
+        else:
+            buffon_errors.append(np.nan)
+
+    plt.figure(figsize=(12, 8))
+    plt.loglog(points, circle_errors, 'b-', label='Circle Method')
+    plt.loglog(points, buffon_errors, 'r-', label='Buffon\'s Needle')
+    plt.grid(True)
+    plt.xlabel('Number of Points/Needles')
+    plt.ylabel('Absolute Error')
+    plt.title('Comparison of Method Convergence')
+    plt.legend()
+    plt.show()
+
+# Run all simulations
+print("Starting Monte Carlo π estimation...")
+
+print("\nCircle Method Visualization:")
+plot_circle_method()
+
+print("\nBuffon's Needle Visualization:")
+plot_buffon_needles()
+
+print("\nMethod Comparison:")
+compare_methods()
+
+print("\nAll simulations completed!")
+
+</code></pre>
+<p><img alt="Circle Method Visualization" src="../images_statistics/problem2_statistics.png"/></p>
+<p><img alt="Buffon's Needle Visualization" src="../images_statistics/problem2_statistics2.png"/></p>
+<p><img alt="Comparison of Methods" src="../images_statistics/problem2_statistics3.png"/></p>
+<h1 id="12-convergence-analysis">1.2 Convergence Analysis</h1>
+<p>Let's analyze how the estimate converges as we increase the number of points:</p>
+<pre><code class="language-python">def convergence_analysis(max_points, steps):
+    points = np.logspace(2, max_points, steps, dtype=int)
+    estimates = []
+    errors = []
+
+    for n in points:
+        pi_est, _, _, _ = estimate_pi_circle(n)
+        estimates.append(pi_est)
+        errors.append(abs(pi_est - np.pi))
+
+    return points, estimates, errors
+
+# Perform analysis
+points, estimates, errors = convergence_analysis(5, 50)
+
+# Plot results
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+
+# Estimates plot
+ax1.semilogx(points, estimates, 'b-', label='Estimate')
+ax1.axhline(y=np.pi, color='r', linestyle='--', label='True π')
+ax1.grid(True)
+ax1.set_xlabel('Number of Points')
+ax1.set_ylabel('π Estimate')
+ax1.legend()
+ax1.set_title('Convergence of π Estimate')
+
+# Error plot
+ax2.loglog(points, errors, 'g-')
+ax2.grid(True)
+ax2.set_xlabel('Number of Points')
+ax2.set_ylabel('Absolute Error')
+ax2.set_title('Error vs. Number of Points')
+plt.tight_layout()
+plt.show()
+</code></pre>
+<p><img alt="Convergence Analysis" src="../images_statistics/problem2_statistics4.png"/></p>
+<h1 id="2-buffons-needle-method">2. Buffon's Needle Method</h1>
+<h3 id="21-theoretical-foundation">2.1 Theoretical Foundation</h3>
+<p>Buffon’s Needle problem is a classic probability problem used to estimate π. When dropping a needle of length </p>
+<p>L onto a surface with equally spaced parallel lines </p>
+<p>D units apart, the probability that the needle crosses a line is:</p>
+<div class="arithmatex">\[ P(\text{crossing}) = \frac{2L}{πD} \]</div>
+<p>Therefore:</p>
+<div class="arithmatex">\[ π = \frac{2L}{D} \cdot \frac{\text{total drops}}{\text{crossings}} \]</div>
+<p>Let's implement this method in python:</p>
+<pre><code class="language-python">def simulate_buffon_needle(n_needles, L=1, D=2):
+    # Random positions and angles
+    y = np.random.uniform(0, D, n_needles)
+    theta = np.random.uniform(0, np.pi, n_needles)
+
+    # Calculate needle endpoints
+    y2 = y + L * np.sin(theta)
+
+    # Count crossings
+    crossings = np.sum(np.floor(y/D) != np.floor(y2/D))
+
+    # Estimate pi
+    pi_estimate = (2 * L * n_needles) / (D * crossings) if crossings &gt; 0 else np.inf
+
+    return pi_estimate, y, theta
+
+def plot_buffon_needles(n_needles=50):
+    L, D = 1, 2
+    pi_est, y, theta = simulate_buffon_needle(n_needles, L, D)
+
+    # Calculate needle endpoints
+    x = np.zeros(n_needles)
+    y1 = y
+    x2 = L * np.cos(theta)
+    y2 = y + L * np.sin(theta)
+
+    # Plot
+    plt.figure(figsize=(12, 6))
+
+    # Draw parallel lines
+    for i in range(-1, 4):
+        plt.axhline(y=i*D, color='k', linestyle='--', alpha=0.3)
+
+    # Draw needles
+    for i in range(n_needles):
+        crosses = np.floor(y1[i]/D) != np.floor(y2[i]/D)
+        color = 'red' if crosses else 'blue'
+        plt.plot([x[i], x2[i]], [y1[i], y2[i]], color=color, alpha=0.6)
+
+    plt.title(f'Buffon\'s Needle Simulation (n={n_needles}, π ≈ {pi_est:.6f})')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.axis('equal')
+    plt.grid(True)
+    plt.show()
+
+# Visualize Buffon's needle simulation
+plot_buffon_needles(50)
+</code></pre>
+<p><img alt="Buffon's Needle Simulation" src="../images_statistics/problem2_statistics5.png"/></p>
+<h1 id="22-convergence-analysis-for-buffons-needle">2.2 Convergence Analysis for Buffon's Needle</h1>
+<pre><code class="language-python">def buffon_convergence_analysis(max_points, steps):
+    points = np.logspace(2, max_points, steps, dtype=int)
+    estimates = []
+    errors = []
+
+    for n in points:
+        pi_est, _, _ = simulate_buffon_needle(n)
+        if pi_est != np.inf:
+            estimates.append(pi_est)
+            errors.append(abs(pi_est - np.pi))
+        else:
+            estimates.append(np.nan)
+            errors.append(np.nan)
+
+    return points, estimates, errors
+
+# Perform analysis
+points, estimates, errors = buffon_convergence_analysis(5, 50)
+
+# Plot results
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+
+# Estimates plot
+ax1.semilogx(points, estimates, 'b-', label='Estimate')
+ax1.axhline(y=np.pi, color='r', linestyle='--', label='True π')
+ax1.grid(True)
+ax1.set_xlabel('Number of Needles')
+ax1.set_ylabel('π Estimate')
+ax1.legend()
+ax1.set_title('Convergence of Buffon\'s Needle Method')
+
+# Error plot
+ax2.loglog(points, errors, 'g-')
+ax2.grid(True)
+ax2.set_xlabel('Number of Needles')
+ax2.set_ylabel('Absolute Error')
+ax2.set_title('Error vs. Number of Needles')
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+<p><img alt="Buffon's Needle Convergence Analysis" src="../images_statistics/problem2_statistics6.png"/></p>
+<h1 id="3-comparison-of-methods">3. Comparison of Methods</h1>
+<p>Let's compare the convergence rates of each methods:</p>
+<pre><code class="language-python">def compare_methods(max_points=5, steps=50):
+    points = np.logspace(2, max_points, steps, dtype=int)
+    circle_errors = []
+    buffon_errors = []
+
+    for n in points:
+        # Circle method
+        pi_est_circle, _, _, _ = estimate_pi_circle(n)
+        circle_errors.append(abs(pi_est_circle - np.pi))
+
+        # Buffon's needle method
+        pi_est_buffon, _, _ = simulate_buffon_needle(n)
+        if pi_est_buffon != np.inf:
+            buffon_errors.append(abs(pi_est_buffon - np.pi))
+        else:
+            buffon_errors.append(np.nan)
+
+    plt.figure(figsize=(10, 6))
+    plt.loglog(points, circle_errors, 'b-', label='Circle Method')
+    plt.loglog(points, buffon_errors, 'r-', label='Buffon\'s Needle')
+    plt.grid(True)
+    plt.xlabel('Number of Points/Needles')
+    plt.ylabel('Absolute Error')
+    plt.title('Comparison of Method Convergence')
+    plt.legend()
+    plt.show()
+
+compare_methods()
+</code></pre>
+<p><img alt="Comparison of Methods" src="../images_statistics/problem2_statistics7.png"/></p>
+<h1 id="4-summary-and-insights">4. Summary and Insights</h1>
+<p>Stability:
+- The circle-based method provides smoother convergence with fewer fluctuations.</p>
+<p>Computation: 
+- It’s computationally cheaper and conceptually simpler.</p>
+<p>Variance: 
+- Buffon’s method introduces more randomness and is slower to converge.</p>
+<p>Educational Value: 
+- Both techniques are powerful for learning probabilistic modeling, with the circle method being more approachable and Buffon’s problem offering historical and mathematical depth.</p>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">

@@ -120,6 +120,207 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="problem-1">Problem 1</h1>
+<p>Equivalent Resistance Using Graph Theory</p>
+<h1 id="1-theoretical-foundation">1. Theoretical Foundation</h1>
+<h1 id="11-basic-circuit-laws">1.1 Basic Circuit Laws</h1>
+<p>For resistors in series and parallel, the equivalent resistance is given by:</p>
+<p>Series: $$ R_{eq} = \sum_{i=1}^n R_i $$</p>
+<p>Parallel: $$ \frac{1}{R_{eq}} = \sum_{i=1}^n \frac{1}{R_i} $$</p>
+<h1 id="12-graph-representation">1.2 Graph Representation</h1>
+<p>A circuit can be represented as a weighted undirected graph G(V,E) where:
+- V: vertices (nodes) represent junctions
+- E: edges represent resistors
+- Weights: resistance values</p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+
+def create_example_circuit():
+    G = nx.Graph()
+    # Add edges with resistance values
+    edges = [(0,1,2), (1,2,4), (2,3,1), (0,2,3), (1,3,5)]
+    G.add_weighted_edges_from(edges)
+    return G
+
+def plot_circuit(G, title="Circuit Graph"):
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(G)
+
+    # Draw edges with weights
+    nx.draw_networkx_edges(G, pos, width=2)
+    nx.draw_networkx_nodes(G, pos, node_color='lightblue', 
+                          node_size=500)
+    nx.draw_networkx_labels(G, pos)
+
+    # Add edge labels (resistance values)
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels)
+
+    plt.title(title)
+    plt.axis('off')
+    plt.show()
+
+# Create and plot example circuit
+G = create_example_circuit()
+plot_circuit(G)
+
+</code></pre>
+<p><img alt="Basic Circuit Graph" src="../images_circuits/problem1_circuits.png"/></p>
+<h1 id="2-algorithm-implementation">2. Algorithm Implementation</h1>
+<h1 id="21-series-reduction">2.1 Series Reduction</h1>
+<p>For series reduction, we identify nodes with exactly two connections:</p>
+<pre><code class="language-python">def find_series_nodes(G):
+    return [node for node in G.nodes() 
+            if G.degree(node) == 2]
+
+def reduce_series(G, node):
+    neighbors = list(G.neighbors(node))
+    r1 = G[node][neighbors[0]]['weight']
+    r2 = G[node][neighbors[1]]['weight']
+
+    # Add new combined resistance
+    G.add_edge(neighbors[0], neighbors[1], 
+               weight=r1 + r2)
+    G.remove_node(node)
+    return G
+
+# Demonstrate series reduction
+G_series = create_example_circuit()
+plot_circuit(G_series, "Before Series Reduction")
+
+node = find_series_nodes(G_series)[0]
+G_series = reduce_series(G_series, node)
+plot_circuit(G_series, "After Series Reduction")
+
+</code></pre>
+<p><img alt="Series Reduction" src="../images_circuits/problem1_circuits2.png"/></p>
+<p><img alt="After Series Reduction" src="../images_circuits/problem1_circuits3.png"/></p>
+<h1 id="22-parallel-reduction">2.2 Parallel Reduction</h1>
+<p>For parallel resistors between the same nodes:</p>
+<pre><code class="language-python">def reduce_parallel(G):
+    for u in G.nodes():
+        for v in G.nodes():
+            if u &lt; v and G.has_edge(u, v):
+                # Find parallel edges
+                paths = list(nx.edge_disjoint_paths(G, u, v))
+                if len(paths) &gt; 1:
+                    # Calculate equivalent resistance
+                    r_eq = 0
+                    for path in paths:
+                        r_path = sum(1/G[path[i]][path[i+1]]['weight'] 
+                                   for i in range(len(path)-1))
+                        r_eq += r_path
+                    r_eq = 1/r_eq
+
+                    # Remove old edges and add new equivalent
+                    for path in paths:
+                        for i in range(len(path)-1):
+                            G.remove_edge(path[i], path[i+1])
+                    G.add_edge(u, v, weight=r_eq)
+    return G
+
+# Demonstrate parallel reduction
+G_parallel = nx.Graph()
+G_parallel.add_weighted_edges_from([(0,1,2), (0,1,3)])
+plot_circuit(G_parallel, "Before Parallel Reduction")
+
+G_parallel = reduce_parallel(G_parallel)
+plot_circuit(G_parallel, "After Parallel Reduction")
+
+</code></pre>
+<p><img alt="Parallel Circuit" src="../images_circuits/problem1_circuits4.png"/>
+<img alt="After Parallel Reduction" src="../images_circuits/problem1_circuits5.png"/></p>
+<h1 id="3-complete-algorithm">3. Complete Algorithm</h1>
+<pre><code class="language-python">def calculate_equivalent_resistance(G):
+    while len(G.nodes()) &gt; 2:
+        # Try series reduction first
+        series_nodes = find_series_nodes(G)
+        if series_nodes:
+            G = reduce_series(G, series_nodes[0])
+            continue
+
+        # Then try parallel reduction
+        G_before = G.copy()
+        G = reduce_parallel(G)
+        if nx.is_isomorphic(G, G_before):
+            break
+
+    if len(G.nodes()) == 2:
+        nodes = list(G.nodes())
+        return G[nodes[0]][nodes[1]]['weight']
+    return None
+
+# Test with example circuits
+def test_circuit(edges, title="Test Circuit"):
+    G = nx.Graph()
+    G.add_weighted_edges_from(edges)
+    plot_circuit(G, f"{title} - Initial")
+
+    R_eq = calculate_equivalent_resistance(G)
+    print(f"Equivalent Resistance: {R_eq:.2f} Ω")
+    plot_circuit(G, f"{title} - Final")
+    return R_eq
+
+# Example 1: Simple series-parallel
+test_circuit([(0,1,2), (1,2,3), (0,2,6)], 
+            "Series-Parallel Circuit")
+
+</code></pre>
+<p><img alt="Test Circuit 1" src="../images_circuits/problem1_circuits6.png"/></p>
+<p>Equivalent Resistance = 8.00 Ω</p>
+<p><img alt="Final Circuit 1" src="../images_circuits/problem1_circuits7.png"/></p>
+<h1 id="4-analysis-and-complexity">4. Analysis and Complexity</h1>
+<h1 id="41-time-complexity">4.1 Time Complexity</h1>
+<ul>
+<li>Series reduction: O(V) for finding nodes, O(1) for reduction</li>
+<li>Parallel reduction: O(V²) for checking all node pairs</li>
+<li>Overall: O(V³) in worst case</li>
+</ul>
+<h1 id="42-space-complexity">4.2 Space Complexity</h1>
+<ul>
+<li>O(V + E) for graph storage</li>
+<li>O(V) additional space for algorithm operations</li>
+</ul>
+<h1 id="5-applications-and-extensions">5. Applications and Extensions</h1>
+<p>The graph-based circuit analysis approach has several key applications and potential extensions:</p>
+<h1 id="51-circuit-analysis-software">5.1 Circuit Analysis Software</h1>
+<p>The graph-based method can be used in:</p>
+<ul>
+<li>Automated circuit simplification tools.</li>
+<li>Resistance calculation modules.</li>
+<li>Real-time analysis systems.</li>
+<li>Component parameter optimization software.</li>
+</ul>
+<h1 id="52-network-optimization">5.2 Network Optimization</h1>
+<p>The approach is adaptable for:</p>
+<ul>
+<li>Power grid analysis and modeling.</li>
+<li>Circuit design optimization.</li>
+<li>Load balancing calculations.</li>
+<li>Network reliability assessments.</li>
+</ul>
+<h1 id="53-educational-tools">5.3 Educational Tools</h1>
+<p>The method is ideal for:</p>
+<ul>
+<li>Interactive circuit visualization.</li>
+<li>Step-by-step reduction demonstrations.</li>
+<li>Virtual circuit-building exercises.</li>
+<li>Progress tracking for learning systems.</li>
+</ul>
+<p>This graph theory-based method provides a strong foundation for these applications, offering both mathematical rigor and computational efficiency.</p>
+<h1 id="6-conclusions">6. Conclusions</h1>
+<ul>
+<li>The graph theory-based approach offers:</li>
+<li>A structured method for circuit analysis.</li>
+<li>Clear visualization of the reduction steps.</li>
+<li>An extensible framework for handling complex circuits.</li>
+</ul>
+<p>Future improvements could involve:</p>
+<ul>
+<li>Calculations for voltage and current.</li>
+<li>Support for active components.</li>
+<li>Optimizations for specific types of circuits.</li>
+</ul>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">

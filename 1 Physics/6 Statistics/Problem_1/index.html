@@ -120,6 +120,304 @@
 <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
 <div class="section" itemprop="articleBody">
 <h1 id="problem-1">Problem 1</h1>
+<p>Exploring the Central Limit Theorem through Simulations</p>
+<h1 id="11-theoretical-part">1.1 Theoretical Part</h1>
+<p>The Central Limit Theorem (CLT) asserts that the distribution of sample means approximates a normal distribution as the sample size increases, regardless of the population’s original distribution. Through simulation, we can visualize and understand this convergence.</p>
+<h1 id="12-mathematical-expression">1.2 Mathematical Expression</h1>
+<p>For a population with mean μ and variance σ², if we take samples of size n:</p>
+<div class="arithmatex">\[ \bar{X}_n \sim N(\mu, \frac{\sigma^2}{n}) \]</div>
+<p>where <span class="arithmatex">\(\bar{X}_n\)</span> is the sample mean distribution.</p>
+<p>The standardized form of the sampling distribution follows:</p>
+<div class="arithmatex">\[ \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} \sim N(0,1) \]</div>
+<h2 id="2-implementation-and-analysis">2. Implementation and Analysis</h2>
+<p>We’ll examine three population distributions:</p>
+<ul>
+<li>
+<p>Uniform Distribution</p>
+</li>
+<li>
+<p>Exponential Distribution</p>
+</li>
+<li>
+<p>Binomial Distribution</p>
+</li>
+</ul>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# For Colab, we need to use this to display plots
+%matplotlib inline
+
+# Plotting style configuration
+sns.set_style("whitegrid")  # This is more reliable than plt.style.use('seaborn')
+plt.rcParams['figure.figsize'] = (12, 8)
+
+def plot_sampling_distribution(population, sample_sizes, n_samples=1000, title=""):
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle(f'Sampling Distributions: {title}', fontsize=16)
+
+    for i, n in enumerate(sample_sizes):
+        row = i // 2
+        col = i % 2
+
+        # Generate sample means
+        sample_means = [np.mean(np.random.choice(population, size=n)) 
+                       for _ in range(n_samples)]
+
+        # Plot histogram with KDE
+        sns.histplot(sample_means, kde=True, ax=axes[row, col])
+
+        # Add normal distribution fit
+        mu = np.mean(sample_means)
+        sigma = np.std(sample_means)
+        x = np.linspace(min(sample_means), max(sample_means), 100)
+        normal_dist = stats.norm.pdf(x, mu, sigma)
+        axes[row, col].plot(x, normal_dist * len(sample_means) * 
+                          (max(sample_means) - min(sample_means)) / 30,
+                          'r--', lw=2, label='Normal Fit')
+
+        # Add theoretical values
+        axes[row, col].axvline(np.mean(population), color='g', 
+                              linestyle='--', label='Population Mean')
+
+        axes[row, col].set_title(f'Sample Size = {n}\nμ={mu:.2f}, σ={sigma:.2f}')
+        axes[row, col].set_xlabel('Sample Mean')
+        axes[row, col].set_ylabel('Frequency')
+        axes[row, col].legend()
+
+    plt.tight_layout()
+    return fig
+
+# 1. Uniform Distribution
+uniform_pop = np.random.uniform(0, 10, 10000)
+fig1 = plot_sampling_distribution(uniform_pop, [5, 10, 30, 50], 
+ title="Uniform Distribution (0, 10)")
+plt.show()
+</code></pre>
+<p><img alt="Uniform Distribution" src="../images_statistics/problem1_statistics.png"/></p>
+<h1 id="21-uniform-distribution-analysis">2.1 Uniform Distribution Analysis</h1>
+<p>The uniform distribution has a theoretical mean of:
+$$ \mu = \frac{a + b}{2} $$
+and variance:
+$$ \sigma^2 = \frac{(b-a)^2}{12} $$</p>
+<p>For our case (0,10):
+- μ = 5
+- σ² ≈ 8.33</p>
+<pre><code class="language-python">
+# 2. Exponential Distribution
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# For Colab, we need to use this to display plots
+%matplotlib inline
+
+# Plotting style configuration
+sns.set_style("whitegrid")  # This is more reliable than plt.style.use('seaborn')
+plt.rcParams['figure.figsize'] = (12, 8)
+
+def plot_sampling_distribution(population, sample_sizes, n_samples=1000, title=""):
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle(f'Sampling Distributions: {title}', fontsize=16)
+
+    for i, n in enumerate(sample_sizes):
+        row = i // 2
+        col = i % 2
+
+        # Generate sample means
+        sample_means = [np.mean(np.random.choice(population, size=n)) 
+                       for _ in range(n_samples)]
+
+        # Plot histogram with KDE
+        sns.histplot(sample_means, kde=True, ax=axes[row, col])
+
+        # Add normal distribution fit
+        mu = np.mean(sample_means)
+        sigma = np.std(sample_means)
+        x = np.linspace(min(sample_means), max(sample_means), 100)
+        normal_dist = stats.norm.pdf(x, mu, sigma)
+        axes[row, col].plot(x, normal_dist * len(sample_means) * 
+                          (max(sample_means) - min(sample_means)) / 30,
+                          'r--', lw=2, label='Normal Fit')
+
+        # Add theoretical values
+        axes[row, col].axvline(np.mean(population), color='g', 
+                              linestyle='--', label='Population Mean')
+
+        axes[row, col].set_title(f'Sample Size = {n}\nμ={mu:.2f}, σ={sigma:.2f}')
+        axes[row, col].set_xlabel('Sample Mean')
+        axes[row, col].set_ylabel('Frequency')
+        axes[row, col].legend()
+
+    plt.tight_layout()
+    return fig
+
+
+exponential_pop = np.random.exponential(2, 10000)
+fig2 = plot_sampling_distribution(exponential_pop, [5, 10, 30, 50], 
+                                title="Exponential Distribution (λ=0.5)")
+plt.show()
+</code></pre>
+<p><img alt="Exponential Distribution (λ=0.5)" src="../images_statistics/problem1_statistics2.png"/></p>
+<h1 id="22-exponential-distribution-analysis">2.2 Exponential Distribution Analysis</h1>
+<p>For exponential distribution with rate parameter λ:
+$$ \mu = \frac{1}{\lambda} $$
+$$ \sigma^2 = \frac{1}{\lambda^2} $$</p>
+<pre><code class="language-python"># 3. Binomial Distribution
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# For Colab, we need to use this to display plots
+%matplotlib inline
+
+# Plotting style configuration
+sns.set_style("whitegrid")  # This is more reliable than plt.style.use('seaborn')
+plt.rcParams['figure.figsize'] = (12, 8)
+
+def plot_sampling_distribution(population, sample_sizes, n_samples=1000, title=""):
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle(f'Sampling Distributions: {title}', fontsize=16)
+
+    for i, n in enumerate(sample_sizes):
+        row = i // 2
+        col = i % 2
+
+        # Generate sample means
+        sample_means = [np.mean(np.random.choice(population, size=n)) 
+                       for _ in range(n_samples)]
+
+        # Plot histogram with KDE
+        sns.histplot(sample_means, kde=True, ax=axes[row, col])
+
+        # Add normal distribution fit
+        mu = np.mean(sample_means)
+        sigma = np.std(sample_means)
+        x = np.linspace(min(sample_means), max(sample_means), 100)
+        normal_dist = stats.norm.pdf(x, mu, sigma)
+        axes[row, col].plot(x, normal_dist * len(sample_means) * 
+                          (max(sample_means) - min(sample_means)) / 30,
+                          'r--', lw=2, label='Normal Fit')
+
+        # Add theoretical values
+        axes[row, col].axvline(np.mean(population), color='g', 
+                              linestyle='--', label='Population Mean')
+
+        axes[row, col].set_title(f'Sample Size = {n}\nμ={mu:.2f}, σ={sigma:.2f}')
+        axes[row, col].set_xlabel('Sample Mean')
+        axes[row, col].set_ylabel('Frequency')
+        axes[row, col].legend()
+
+    plt.tight_layout() # This line and the one below were incorrectly indented.
+    return fig # Indentation fixed to align with the function block.
+
+
+binomial_pop = np.random.binomial(20, 0.3, 10000)
+fig3 = plot_sampling_distribution(binomial_pop, [5, 10, 30, 50], 
+title="Binomial Distribution (n=20, p=0.3)")
+plt.show()
+</code></pre>
+<p><img alt="Binomial Distribution (n=20, p=0.3)" src="../images_statistics/problem1_statistics3.png"/></p>
+<h1 id="23-binomial-distribution-analysis">2.3 Binomial Distribution Analysis</h1>
+<p>For binomial distribution:
+$$ \mu = np $$
+$$ \sigma^2 = np(1-p) $$</p>
+<h1 id="3-convergence-analysis">3. Convergence Analysis</h1>
+<p>Let's analyze the rate of convergence using Q-Q plots:</p>
+<pre><code class="language-python">def plot_qq_analysis(population, sample_sizes, n_samples=1000):
+    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig.suptitle('Q-Q Plots for Different Sample Sizes', fontsize=16)
+
+    for i, n in enumerate(sample_sizes):
+        row = i // 2
+        col = i % 2
+
+        sample_means = [np.mean(np.random.choice(population, size=n)) 
+                       for _ in range(n_samples)]
+
+        stats.probplot(sample_means, dist="norm", plot=axes[row, col])
+        axes[row, col].set_title(f'Sample Size = {n}')
+
+    plt.tight_layout()
+    return fig
+
+# Analyze convergence for exponential distribution
+fig4 = plot_qq_analysis(exponential_pop, [5, 10, 30, 50])
+plt.show()
+</code></pre>
+<p><img alt="Q-Q Plots for Different Sample Sizes" src="../images_statistics/problem1_statistics4.png"/></p>
+<h1 id="4-standard-error-analysis">4. Standard Error Analysis</h1>
+<p>As predicted by the CLT, the standard error should reduce in proportion to the inverse square root of the sample size.</p>
+<div class="arithmatex">\[ SE = \frac{\sigma}{\sqrt{n}} \]</div>
+<pre><code class="language-python">
+def plot_standard_error(population, max_sample_size=100):
+    sample_sizes = np.arange(5, max_sample_size + 1, 5)
+    theoretical_se = np.std(population) / np.sqrt(sample_sizes)
+    empirical_se = []
+
+    for n in sample_sizes:
+        sample_means = [np.mean(np.random.choice(population, size=n)) for _ in range(1000)]
+        empirical_se.append(np.std(sample_means))
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(sample_sizes, theoretical_se, 'r-', label='Theoretical SE')
+    plt.plot(sample_sizes, empirical_se, 'b--', label='Empirical SE')
+    plt.xlabel('Sample Size')
+    plt.ylabel('Standard Error')
+    plt.title('Standard Error vs Sample Size')
+    plt.legend()
+    plt.grid(True)
+    return plt.gcf()
+
+fig5 = plot_standard_error(exponential_pop)
+plt.show()
+
+</code></pre>
+<p><img alt="Standard Error vs Sample Size" src="../images_statistics/problem1_statistics5.png"/></p>
+<h1 id="5-real-world-applications-of-clt">5. Real-World Applications of CLT</h1>
+<p>Manufacturing and Quality Control</p>
+<ul>
+<li>Determining whether product measurements fall within acceptable tolerance levels.</li>
+</ul>
+<p>Finance and Economics</p>
+<ul>
+<li>Estimating returns and risk based on historical sampling from market data.</li>
+</ul>
+<p>Scientific Research</p>
+<ul>
+<li>Building confidence intervals and conducting hypothesis tests when sample data is used.</li>
+</ul>
+<h1 id="6-conclusions">6. Conclusions</h1>
+<ol>
+<li>
+<p>The simulations provide strong evidence supporting the Central Limit Theorem:</p>
+</li>
+<li>
+<p>Sampling distributions increasingly resemble the normal distribution as sample size grows.</p>
+</li>
+<li>
+<p>The original shape of the population affects how rapidly this normality is approached.</p>
+</li>
+<li>
+<p>The standard error diminishes predictably with larger samples.</p>
+</li>
+<li>
+<p>These properties hold regardless of whether the population is symmetric, skewed, or discrete.</p>
+</li>
+</ol>
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
