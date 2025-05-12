@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../../../../img/favicon.ico" rel="shortcut icon"/>
+<title>Problem 2 - Physics and Mathematics</title>
+<link href="../../../../css/theme.css" rel="stylesheet"/>
+<link href="../../../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "Problem 2";
+        var mkdocs_page_input_path = "1 Physics/2 Gravity/2 Gravity/Problem_2.md";
+        var mkdocs_page_url = null;
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/rust.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../../../.."> Physics and Mathematics
+        </a><div role="search">
+<form action="../../../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../..">Home</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Physics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal">Mechanics</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../1%20Mechanics/Problem_1/">Problem 1</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../1%20Mechanics/Problem_2/">Problem 2</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal">Gravity</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../Problem_1/">Problem 1</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Problem_2/">Problem 2</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../Problem_3/">Problem 3</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal">Waves</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../3%20Waves/Problem_1/">Problem 1</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal">Electromagnetism</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../4%20Electromagnetism/Problem_1/">Problem 1</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal">Circuits</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../5%20Circuits/Problem_1/">Problem 1</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal">Statistics</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../6%20Statistics/Problem_1/">Problem 1</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../6%20Statistics/Problem_2/">Problem 2</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal">Measurements</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../7%20Measurements/Problem_1/">Problem 1</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../../../..">Physics and Mathematics</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../../../.."></a></li>
+<li class="breadcrumb-item active">Problem 2</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="problem-2">Problem 2</h1>
+<p>Escape Velocities and Cosmic Velocities</p>
+<h1 id="1-theoretical-foundation">1. Theoretical Foundation</h1>
+<h1 id="definition-of-cosmic-velocities">Definition of Cosmic Velocities</h1>
+<p>Cosmic velocities define the minimum speeds needed for different space motions:</p>
+<ol>
+<li>
+<p><strong>First Cosmic Velocity (Orbital Velocity)</strong></p>
+</li>
+<li>
+<p>The minimum velocity needed to achieve a stable circular orbit around a celestial body.</p>
+</li>
+<li>
+<p>Derived from the balance between gravitational force and centripetal force:
+     $$
+     v_1 = \sqrt{\frac{GM}{R}}
+     $$</p>
+</li>
+<li>
+<p><strong>Second Cosmic Velocity (Escape Velocity)</strong></p>
+</li>
+<li>
+<p>The velocity required to break free from a celestial body's gravitational influence without further propulsion.</p>
+</li>
+<li>Derived from the energy conservation principle:
+     $$
+     v_2 = \sqrt{\frac{2GM}{R}}
+     $$</li>
+<li>
+<p>Notably, <span class="arithmatex">\( v_2 = \sqrt{2} v_1 \)</span>.</p>
+</li>
+<li>
+<p><strong>Third Cosmic Velocity (Solar System Escape Velocity)</strong></p>
+</li>
+<li>
+<p>The velocity required to escape the Sun’s gravitational field from a planet’s orbit.</p>
+</li>
+<li>Computed by combining the escape velocity from a planet and the velocity required to escape the Sun’s gravity:
+     $$
+     v_3 = \sqrt{v_2^2 + v_{sun}^2}
+     $$
+   where <span class="arithmatex">\( v_{sun} \)</span> is the orbital velocity of the planet around the Sun.</li>
+</ol>
+<hr/>
+<h1 id="2-analysis-of-results">2. Analysis of Results</h1>
+<h1 id="21-velocity-relationships">2.1 Velocity Relationships</h1>
+<p>Let's examine how these velocities vary with distance from a celestial body:</p>
+<pre><code class="language-python"># Create distance-velocity relationship plot
+plt.figure(figsize=(10, 6))
+distances = np.linspace(1, 10, 1000)  # In Earth radii
+earth_mass = 5.972e24
+earth_radius = 6.371e6
+
+v1 = np.sqrt(G * earth_mass / (distances * earth_radius)) / 1000
+v2 = np.sqrt(2) * v1
+
+plt.plot(distances, v1, label='First Cosmic Velocity')
+plt.plot(distances, v2, label='Second Cosmic Velocity')
+plt.xlabel('Distance (Earth Radii)')
+plt.ylabel('Velocity (km/s)')
+plt.title('Cosmic Velocities vs Distance from Earth')
+plt.grid(True)
+plt.legend()
+plt.show()
+</code></pre>
+<p><img alt="Velocity vs Distance Relationship" src="../images_gravity/problem2_gravity2.png"/></p>
+<h1 id="22-key-observations">2.2 Key Observations</h1>
+<ol>
+<li><strong>Inverse Square Relationship</strong>: Both first and second cosmic velocities decrease with the square root of distance.</li>
+<li><strong>Mass Dependence</strong>: Larger celestial bodies require higher velocities for escape.</li>
+<li><strong>Radius Effect</strong>: For a given mass, smaller bodies have higher surface escape velocities.</li>
+</ol>
+<hr/>
+<h1 id="3-python-script-for-calculations-and-visualization">3. Python Script for Calculations and Visualization</h1>
+<p>Below is a Python script to calculate and visualize cosmic velocities for Earth, Mars, and Jupiter.</p>
+<pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Constants
+G = 6.67430e-11  # Gravitational constant (m^3 kg^-1 s^-2)
+
+# Celestial body data (mass in kg, radius in meters, distance to sun in meters)
+bodies = {
+    "Earth": {"mass": 5.97e24, "radius": 6.37e6, "distance_to_sun": 1.496e11},
+    "Mars": {"mass": 6.42e23, "radius": 3.39e6, "distance_to_sun": 2.279e11},
+    "Jupiter": {"mass": 1.90e27, "radius": 6.99e7, "distance_to_sun": 7.785e11},
+}
+
+# Function to calculate the first cosmic velocity (circular orbit)
+def first_velocity(mass, radius):
+    return np.sqrt(G * mass / radius)
+
+# Function to calculate the second cosmic velocity (escape velocity)
+def second_velocity(mass, radius):
+    return np.sqrt(2 * G * mass / radius)
+
+# Function to calculate the third cosmic velocity (escape from the star's gravitational influence)
+def third_velocity(mass, radius, distance_to_sun, second_velocity_earth):
+    return np.sqrt(2 * G * mass / radius + (second_velocity_earth**2) / 2)
+
+# Dictionary to store the velocities for each body
+velocities = {}
+
+# Calculate the first and second cosmic velocities for each celestial body
+for body, data in bodies.items():
+    velocities[body] = {
+        "v1": first_velocity(data["mass"], data["radius"]),
+        "v2": second_velocity(data["mass"], data["radius"]),
+    }
+
+# Calculate the third cosmic velocity for each celestial body
+for body, data in bodies.items():
+    second_velocity_earth = velocities["Earth"]["v2"] if body == "Earth" else 0
+    velocities[body]["v3"] = third_velocity(data["mass"], data["radius"], data["distance_to_sun"], second_velocity_earth)
+
+# Prepare data for plotting
+labels = list(bodies.keys())
+v1_values = [velocities[body]["v1"] for body in labels]
+v2_values = [velocities[body]["v2"] for body in labels]
+v3_values = [velocities[body]["v3"] for body in labels]
+
+# Plotting the velocities
+x = np.arange(len(labels))  # X-axis positions for each body
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+ax.bar(x - 0.2, v1_values, 0.2, label='First Cosmic Velocity (v1)', color='blue')
+ax.bar(x, v2_values, 0.2, label='Second Cosmic Velocity (v2)', color='green')
+ax.bar(x + 0.2, v3_values, 0.2, label='Third Cosmic Velocity (v3)', color='red')
+
+# Adding labels and title
+ax.set_xlabel('Celestial Body')
+ax.set_ylabel('Velocity (m/s)')
+ax.set_title('Cosmic Velocities for Earth, Mars, and Jupiter')
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+
+# Display the plot
+plt.tight_layout()
+plt.show()
+
+</code></pre>
+<p>This script:</p>
+<ul>
+<li>
+<p>Calculates the first, second, and third cosmic velocities for Earth, Mars, and Jupiter.</p>
+</li>
+<li>
+<p>Visualizes a comparison of these velocities using a bar chart to illustrate the differences for each celestial body.</p>
+</li>
+</ul>
+<p><img alt="First and Second Cosmic Velocities" src="../images_gravity/problem2_gravity.png"/></p>
+<hr/>
+<h1 id="4-importance-in-space-exploration">4. Importance in Space Exploration</h1>
+<p>Escape Velocity:</p>
+<ul>
+<li>
+<p>The escape velocity is essential for launching spacecraft and satellites. For instance, Earth’s escape velocity is approximately 11.2 km/s, meaning a spacecraft needs this speed to break free from Earth's gravity without further propulsion.</p>
+</li>
+<li>
+<p>For interplanetary missions, the second cosmic velocity helps in launching spacecraft to other planets, such as Mars, where the escape velocity is much lower than Earth's.</p>
+</li>
+</ul>
+<p>Orbital Velocity:</p>
+<ul>
+<li>The orbital velocity is critical for satellites. A satellite needs to achieve a specific orbital velocity to stay in a stable orbit around a planet, like Earth. This velocity ensures that the satellite's centrifugal force balances the gravitational pull from the planet.</li>
+</ul>
+<p>Solar Escape Velocity:</p>
+<ul>
+<li>The third cosmic velocity is particularly relevant for missions aimed at escaping not just a planet’s gravity but the entire solar system, enabling spacecraft like Voyager 1 to leave the solar system and head into interstellar space.</li>
+</ul>
+<hr/>
+<h1 id="5-conclusion">5. Conclusion</h1>
+<p>Understanding cosmic velocities is fundamental for space exploration, from launching satellites to planning interplanetary missions and even considering future interstellar travel. By calculating and visualizing these velocities for different celestial bodies, we can better understand the challenges of escaping gravitational forces and venturing into space.</p>
+</div>
+</div><footer>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+</span>
+</div>
+<script src="../../../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../../../..";</script>
+<script src="../../../../js/theme_extra.js"></script>
+<script src="../../../../js/theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="../../../../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+</body>
+</html>
