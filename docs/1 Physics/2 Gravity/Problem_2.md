@@ -36,19 +36,39 @@ Cosmic velocities define the minimum speeds needed for different space motions:
 
 ---
 
-# 2. Mathematical Derivations and Parameters Affecting Velocities
+# 2. Analysis of Results
 
-- These cosmic velocities depend on the mass of the celestial body and the radius of the body or orbit. As such, the escape velocity increases with the mass of the body and decreases with the radius.
+# 2.1 Velocity Relationships
 
-Effect of Mass:
+Let's examine how these velocities vary with distance from a celestial body:
 
-- As the mass of the body increases, the gravitational pull strengthens, requiring higher velocities to escape or orbit.
+```python
+# Create distance-velocity relationship plot
+plt.figure(figsize=(10, 6))
+distances = np.linspace(1, 10, 1000)  # In Earth radii
+earth_mass = 5.972e24
+earth_radius = 6.371e6
 
-- Larger celestial bodies, such as Jupiter or the Sun, have much higher escape velocities compared to smaller bodies like the Moon.
+v1 = np.sqrt(G * earth_mass / (distances * earth_radius)) / 1000
+v2 = np.sqrt(2) * v1
 
-Effect of Radius:
+plt.plot(distances, v1, label='First Cosmic Velocity')
+plt.plot(distances, v2, label='Second Cosmic Velocity')
+plt.xlabel('Distance (Earth Radii)')
+plt.ylabel('Velocity (km/s)')
+plt.title('Cosmic Velocities vs Distance from Earth')
+plt.grid(True)
+plt.legend()
+plt.show()
+```
 
-- The farther you are from the center of a body, the weaker the gravitational force, which reduces the required velocity. For example, an object at a higher altitude above Earth's surface will need a lower velocity to escape.
+![Velocity vs Distance Relationship](images_gravity/problem2_gravity2.png)
+
+# 2.2 Key Observations
+
+1. **Inverse Square Relationship**: Both first and second cosmic velocities decrease with the square root of distance.
+2. **Mass Dependence**: Larger celestial bodies require higher velocities for escape.
+3. **Radius Effect**: For a given mass, smaller bodies have higher surface escape velocities.
 
 ---
 
